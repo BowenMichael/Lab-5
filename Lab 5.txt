@@ -165,6 +165,10 @@ void initRayOrtho(out sRay ray,
     initRayPersp(ray, eyePosition + sBasis(viewport.xy, 0.0), viewport);
 }
 
+void distort(out vec2 px){
+    float modifier = 50.0;
+	px = vec2(px.x, px.y + cos((px.x + iTime/(modifier/2.0)) * modifier)/modifier);
+}
 
 //------------------------------------------------------------
 // RENDERING FUNCTIONS
@@ -174,9 +178,15 @@ void initRayOrtho(out sRay ray,
 //	  ray: input ray info
 color4 calcColor(in sViewport vp, in sRay ray)
 {
-    
-    vec4 t1 = texture(iChannel0, vp.uv);
-    vec4 t2 = texture(iChannel1, vp.uv);
+    vec2 modifier = vec2(cos(iTime), sin(iTime));
+    vec2 px = vp.pixelCoord;
+    vec2 res = iChannelResolution[0].xy;
+    sDCoord loc = px / res;
+    loc *= 1.0;
+    distort(loc);
+    vec4 t1 = texture(iChannel0, loc);
+    return t1;
+    vec4 t2 = texture(iChannel1, vp.uv );
     return vec4(mix(t1.rgb,t2.rgb, .5), 1.0);
     
     // test inputs
