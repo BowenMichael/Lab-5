@@ -174,12 +174,17 @@ void initRayOrtho(out sRay ray,
 //	  ray: input ray info
 color4 calcColor(in sViewport vp, in sRay ray)
 {
+    
+    vec4 t1 = texture(iChannel0, vp.uv);
+    vec4 t2 = texture(iChannel1, vp.uv);
+    return vec4(mix(t1.rgb,t2.rgb, .5), 1.0);
+    
     // test inputs
     //return color4(ray.direction.xyz == vp.viewportPoint.xyz); // pass
-    //return color4(lengthSq(vp.viewportPoint.xy) >= 0.25); // pass
+    return color4(lengthSq(vp.viewportPoint.xy) >= 0.25); // pass
     //return color4(vp.uv, 0.0, 0.0);
     //return color4(vp.ndc, 0.0, 0.0);
-    return vp.viewportPoint;
+    //return vp.viewportPoint;
 }
 
 
